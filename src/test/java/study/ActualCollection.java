@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CollectionTest {
+public class ActualCollection {
     private Set<Integer> numbers;
 
     @BeforeEach
