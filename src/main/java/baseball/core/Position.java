@@ -3,44 +3,63 @@ package baseball.core;
 import java.util.ArrayList;
 
 public class Position {
-    private ArrayList<Integer> strikeSourcePosition = new ArrayList<>();
-
+    private ArrayList<Integer> strikePosition;
+    private ArrayList<Integer> ballSourcePosition;
+    private ArrayList<Integer> ballClientSourcePosition;
     public Position() {
+        strikePosition = new ArrayList<>();
+        ballSourcePosition = new ArrayList<>();
+        ballClientSourcePosition = new ArrayList<>();
     }
 
-    public ArrayList<Integer> getStrikeSourcePosition() {
-        return strikeSourcePosition;
-    }
-
-    public int searchStrikePosition(ArrayList<Integer> source, ArrayList<Integer> clientSource) {
-        int strikeCount = 0;
+    //스트라이크된 갯수 반환
+    public int getStrikeCount(ArrayList<Integer> source, ArrayList<Integer> clientSource) {
         for (int i = 0; i < source.size(); i++) {
-            removePosition(source, clientSource, i);
-            strikeCount += 1;
+            searchStrikePosition(source, clientSource, i);
         }
-        return strikeCount;
+        return strikePosition.size();
     }
 
-    private void removePosition(ArrayList<Integer> source, ArrayList<Integer> clientSource, int i) {
+    private void searchStrikePosition(ArrayList<Integer> source, ArrayList<Integer> clientSource, int i) {
         if (source.get(i) == clientSource.get(i)) {
-            source.remove(i);
-            clientSource.remove(i);
+            strikePosition.add(i);
         }
     }
 
-    private void compareValueCheck(String source, String clientSource, int i) {
-        if(clientSource.toCharArray()[i] == source.toCharArray()[i]){
-            strikeSourcePosition.add(source.indexOf(source.toCharArray()[i]));
+    // 1. 스트라이크 된 애들 제외
+    // 2. 볼 됐던 애들 제외 -> (source, clientSource)의 볼 됐던 position 건들 제외
+    public int getBallCount(ArrayList<Integer> sourceAL, ArrayList<Integer> clientSourceAL) {
+        for (int i = 0; i < sourceAL.size(); i++) {
+            expectBallStrikeSource(sourceAL, clientSourceAL, i);
+        }
+
+        return ballSourcePosition.size();
+    }
+
+    private void expectBallStrikeSource(ArrayList<Integer> sourceAL, ArrayList<Integer> clientSourceAL, int i) {
+        if (!strikePosition.contains(i) && !ballSourcePosition.contains(i)) {
+            checkClientSource(sourceAL, clientSourceAL, i);
         }
     }
 
-    public boolean strikeExcept(int index) {
-        boolean expectFlag = false;
-
-        if (!strikeSourcePosition.contains(index)) {
-            expectFlag = true;
+    private void checkClientSource(ArrayList<Integer> sourceAL, ArrayList<Integer> clientSourceAL, int i) {
+        for (int j = 0; j < clientSourceAL.size(); j++) {
+            expectBallStrikeClient(sourceAL, clientSourceAL, i, j);
         }
+    }
 
-        return expectFlag;
+    private void expectBallStrikeClient(ArrayList<Integer> sourceAL, ArrayList<Integer> clientSourceAL, int i, int j) {
+        // 1. 스트라이크 제외, 2. 볼 된 케이스 제외
+        if (!strikePosition.contains(j) && !ballClientSourcePosition.contains(j)) {
+            equalsSources(sourceAL, clientSourceAL, i, j);
+        }
+    }
+
+    private void equalsSources(ArrayList<Integer> sourceAL, ArrayList<Integer> clientSourceAL, int i, int j) {
+        if (sourceAL.get(i) == clientSourceAL.get(j)) {
+            // 2. 볼 된 애들
+            ballSourcePosition.add(i);
+            ballClientSourcePosition.add(j);
+        }
     }
 }

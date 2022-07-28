@@ -8,14 +8,9 @@ public class ResultView {
     public ResultView() {
     }
 
-    public void showResult(Baseball baseball) {
-
-        nothingCheckShow(baseball);
-        showBallStrike(baseball);
-
-        if (baseball.getGame().getStrike() != 3) {
-            baseball.rePlay();
-        }
+    public void result(Baseball baseball) {
+        showResult(baseball);
+        replayProcess(baseball);
 
         if (baseball.getGame().getStrike() == 3) {
             Scanner scanner = new Scanner(System.in);
@@ -28,6 +23,17 @@ public class ResultView {
         }
     }
 
+    private void showResult(Baseball baseball) {
+        nothingCheckShow(baseball);
+        showBallStrike(baseball);
+    }
+
+    private void replayProcess(Baseball baseball) {
+        if (baseball.getGame().getStrike() != 3) {
+            baseball.rePlay();
+        }
+    }
+
     private void responseByAnswer(String answer) {
         if (!answer.equals("1") && !answer.equals("2")) {
             throw new IllegalStateException("1 또는 2를 입력하지 않았습니다.");
@@ -36,7 +42,7 @@ public class ResultView {
             new Baseball().play();
         }
         if (answer.equals("2")) {
-            return;
+            System.exit(0);
         }
     }
 

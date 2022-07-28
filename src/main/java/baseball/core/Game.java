@@ -10,11 +10,11 @@ import java.util.stream.Collectors;
 public class Game {
     private int strike;
     private int ball;
-    private ArrayList<Integer> sourceAL = new ArrayList<>();
-    private ArrayList<Integer> clientSourceAL = new ArrayList<>();
+    private String nothing;
     private Position position;
     private ResultView resultView;
-    private String nothing;
+    private ArrayList<Integer> sourceAL = new ArrayList<>();
+    private ArrayList<Integer> clientSourceAL = new ArrayList<>();
 
     public Game() {
         position = new Position();
@@ -29,15 +29,8 @@ public class Game {
     public void start(String source, String clientSource) {
         initSource(source, clientSource);
 
-
-
-
-        strike = position.searchStrikePosition(sourceAL, clientSourceAL);
-
-        String expectedSource = expectedStrikeSources(source);
-        String expectedClientSource = expectedStrikeSources(clientSource);
-
-        setBall(expectedSource, expectedClientSource);
+        strike = position.getStrikeCount(sourceAL, clientSourceAL);
+        ball = position.getBallCount(sourceAL, clientSourceAL);
         setNothing();
     }
 
@@ -59,27 +52,6 @@ public class Game {
             return;
         }
         nothing = "";
-    }
-
-    //문자열을 스트라이크 제외한 새로운 문자열로 구현
-    private String expectedStrikeSources(String source) {
-        int[] index = {0};
-
-        return source.chars()
-                .filter(c -> position.strikeExcept(index[0]++))
-                .mapToObj(Character::toString)
-                .collect(Collectors.joining(""));
-    }
-
-    private void setBall(String source, String clientSource) {
-        int resultBallCnt = 0;
-        for (char compareChar :
-                clientSource.toCharArray()) {
-            resultBallCnt += source.chars()
-                                .filter(standardChar -> standardChar == compareChar)
-                                .count();
-        }
-        ball = resultBallCnt;
     }
 
     public int getStrike() {

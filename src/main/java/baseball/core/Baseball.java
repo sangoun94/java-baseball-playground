@@ -21,7 +21,7 @@ public class Baseball {
     public void play() {
         clientBaseball();
         game.start(computer.getSource(), inputView.getClientSource());
-        resultView.showResult(this);
+        resultView.result(this);
     }
 
     public void rePlay() {
